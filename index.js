@@ -10,6 +10,7 @@ const url = require('url');
 const StringDecoder = require('string_decoder').StringDecoder;
 const config = require('./config');
 const fs = require('fs');
+const _data = require('./lib/data');
 
 // server logic
 const unifiedServer = function(req, res) {
@@ -33,6 +34,7 @@ const unifiedServer = function(req, res) {
 	// get the payload if there is any
 	const decoder = new StringDecoder('utf-8');
 	let buffer = '';
+
 	req.on('data', function(data){
 		buffer += decoder.write(data)
 	})
@@ -51,7 +53,7 @@ const unifiedServer = function(req, res) {
 			headers,
 			payload: buffer
 		}
-		
+
 		// route the req to the handler
 		chosenHandler(data, function(statusCode, payload){
 			// use the status code called back by the handler, or default
@@ -91,17 +93,13 @@ httpsServer.listen(config.httpsPort, function(){
 })
 
 
-
-
-
 // define handlers
 const handlers = {}
 
-// sample handler
-handlers.sample = function(data, callback){
-	// callback an http status code, and a payload object
-	callback(200, {'name': 'sample handler'}) 
+handlers.ping = function(data, callback) {
+	callback(200);
 }
+
 
 // not found handler
 handlers.notFound = function(data, callback) {
@@ -110,5 +108,5 @@ handlers.notFound = function(data, callback) {
 
 // define a request router
 const router = {
-	'sample': handlers.sample 
+	'ping': handlers.ping 
 };
