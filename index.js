@@ -17,11 +17,11 @@ const helpers = require('./lib/helpers');
 // server logic
 const unifiedServer = function(req, res) {
 	// get the url and parse it
-	const parsedUrl = url.parse(req.url, true)
+	const parsedUrl = url.parse(req.url, true);
 	// get url path
 
 	const path = parsedUrl.pathname;
-	const trimmePath = path.replace(/^\/+|\/+$/g,'')
+	const trimmePath = path.replace(/^\/+|\/+$/g,'');
 
 	// get query string
 
@@ -39,10 +39,10 @@ const unifiedServer = function(req, res) {
 
 	req.on('data', function(data){
 		buffer += decoder.write(data)
-	})
+	});
 
 	req.on('end', function(){
-		buffer += decoder.end()
+		buffer += decoder.end();
 		
 		// choose handler the req should go to
 		const chosenHandler = router[trimmePath] ? router[trimmePath] : handlers.notFound;
@@ -59,18 +59,18 @@ const unifiedServer = function(req, res) {
 		// route the req to the handler
 		chosenHandler(data, function({statusCode, responseData}){
 			// use the status code called back by the handler, or default
-			const status = typeof(statusCode) == 'number' ? statusCode : 200
+			const status = typeof(statusCode) === 'number' ? statusCode : 200;
 
 			// use the payload called back by the handler, or default
-			const response = typeof(responseData) == 'object' ? responseData : {}
+			const response = typeof(responseData) === 'object' ? responseData : {};
 
 			// convert payload to a string
-			const responseString = JSON.stringify(response)
+			const responseString = JSON.stringify(response);
 
 			// return response
-			res.setHeader('Content-Type', 'application/json')
+			res.setHeader('Content-Type', 'application/json');
 			res.writeHead(statusCode);
-			res.end(responseString)
+			res.end(responseString);
 			console.log('returning response: ', statusCode, responseString)
 		});
 	});
@@ -81,7 +81,7 @@ const httpServer = http.createServer(unifiedServer);
 
 httpServer.listen(config.httpPort, function(){
 	console.log('server listening on port ' + config.httpPort + ', in ' + config.envName + ' mode')
-})
+});
 
 const httpsServerOptions = {
 	key: fs.readFileSync('./https/key.pem'),
@@ -92,7 +92,7 @@ const httpsServer = https.createServer(httpsServerOptions, unifiedServer);
 
 httpsServer.listen(config.httpsPort, function(){
 	console.log('server listening on port ' + config.httpsPort + ', in ' + config.envName + ' mode')
-})
+});
 
 // define a request router
 const router = {
