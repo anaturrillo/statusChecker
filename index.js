@@ -57,21 +57,21 @@ const unifiedServer = function(req, res) {
 		}
 
 		// route the req to the handler
-		chosenHandler(data, function(statusCode, payload){
+		chosenHandler(data, function({statusCode, responseData}){
 			// use the status code called back by the handler, or default
-			statusCode = typeof(statusCode) == 'number' ? statusCode : 200
+			const status = typeof(statusCode) == 'number' ? statusCode : 200
 
 			// use the payload called back by the handler, or default
-			payload = typeof(payload) == 'object' ? payload : {}
+			const response = typeof(responseData) == 'object' ? responseData : {}
 
 			// convert payload to a string
-			const payloadString = JSON.stringify(payload)
+			const responseString = JSON.stringify(response)
 
 			// return response
 			res.setHeader('Content-Type', 'application/json')
 			res.writeHead(statusCode);
-			res.end(payloadString)
-			console.log('returning response: ', statusCode, payloadString)
+			res.end(responseString)
+			console.log('returning response: ', statusCode, responseString)
 		});
 	});
 };
