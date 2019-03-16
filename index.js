@@ -54,25 +54,24 @@ const unifiedServer = function(req, res) {
 			method,
 			headers,
 			payload: helpers.parseJsonToObject(buffer)
-		}
+		};
 
 		// route the req to the handler
-		chosenHandler(data, function({statusCode, responseData}){
-			// use the status code called back by the handler, or default
-			const status = typeof(statusCode) === 'number' ? statusCode : 200;
+		chosenHandler(data)
+			.then(function({statusCode, responseData}){
+        // use the status code called back by the handler, or default
+        const status = typeof(statusCode) === 'number' ? statusCode : 200;
 
-			// use the payload called back by the handler, or default
-			const response = typeof(responseData) === 'object' ? responseData : {};
+        // use the payload called back by the handler, or default
+        const response = typeof(responseData) === 'object' ? JSON.stringify(responseData) : '{}';
 
-			// convert payload to a string
-			const responseString = JSON.stringify(response);
+        // return response
+        res.setHeader('Content-Type', 'application/json');
+        res.writeHead(statusCode);
+        res.end(response);
+        console.log('returning response: ', statusCode, response)
+      })
 
-			// return response
-			res.setHeader('Content-Type', 'application/json');
-			res.writeHead(statusCode);
-			res.end(responseString);
-			console.log('returning response: ', statusCode, responseString)
-		});
 	});
 };
 
