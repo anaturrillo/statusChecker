@@ -14,14 +14,15 @@ const _data = require('./lib/data');
 const handlers = require('./lib/handlers');
 const helpers = require('./lib/helpers');
 
+
 // server logic
 const unifiedServer = function(req, res) {
 	// get the url and parse it
-	const parsedUrl = url.parse(req.url, true)
+	const parsedUrl = url.parse(req.url, true);
 	// get url path
 
 	const path = parsedUrl.pathname;
-	const trimmePath = path.replace(/^\/+|\/+$/g,'')
+	const trimmePath = path.replace(/^\/+|\/+$/g,'');
 
 	// get query string
 
@@ -92,11 +93,12 @@ const httpsServer = https.createServer(httpsServerOptions, unifiedServer);
 
 httpsServer.listen(config.httpsPort, function(){
 	console.log('server listening on port ' + config.httpsPort + ', in ' + config.envName + ' mode')
-})
+});
 
 // define a request router
 const router = {
 	'ping': handlers.ping,
 	'users': handlers.users,
-	'tokens': handlers.tokens
+	'tokens': handlers.tokens,
+	'checks': handlers.checks
 };
